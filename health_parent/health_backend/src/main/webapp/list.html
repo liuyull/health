@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="ElementUI/index.css">
+    <script src="ElementUI/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <!-- 引入ElementUI组件库 -->
+    <script src="ElementUI/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-row>
+            <el-button type="primary" @click="saveEmp">添加</el-button>
+        </el-row>
+        <el-table :data="empList" stripe>
+            <el-table-column prop="id" label="编号"></el-table-column>
+            <el-table-column prop="name" label="姓名"></el-table-column>
+            <el-table-column prop="salary" label="薪资"></el-table-column>
+            <el-table-column prop="birthday" label="生日"></el-table-column>
+            <el-table-column label="操作" align="center">
+                <!--
+                    slot-scope：作用域插槽，可以获取表格数据
+                    scope：代表表格数据，可以通过scope.row来获取表格当前行数据，scope不是固定写法
+                -->
+                <template slot-scope="scope">
+                    <el-button type="primary" size="mini" @click="showUpdate(scope.row)">编辑</el-button>
+                    <el-button type="danger" size="mini"  @click="delById(scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-dialog title="员工信息" :visible.sync="dialogFormVisible">
+            <el-form :model="emp">
+                <el-form-item label="编号" :label-width="formLabelWidth">
+                    <el-input v-model="emp.id" autocomplete="off" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" :label-width="formLabelWidth">
+                    <el-input v-model="emp.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="薪资":label-width="formLabelWidth">
+                    <el-input v-model="emp.salary"></el-input>
+                </el-form-item>
+                <el-form-item label="生日":label-width="formLabelWidth">
+                    <el-col>
+                        <el-date-picker type="date" placeholder="选择日期" v-model="emp.birthday" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="update()">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+    <script>
+        new Vue({
+            el:"#app",
+            data:{
+                emp:{
+                    id:"",
+                    username:"",
+                    salary:"",
+                    birthday:""
+                },
+                empList:[],
+                dialogFormVisible: false,
+                formLabelWidth: '120px'
+            },
+            methods:{
+                saveEmp(){
+                  location.href="form.html";
+                },
+                findAll:function () {
+                    var that = this;
+                    axios.get("emp/findAll.do").then(function (response) {
+                        that.empList=response.data;
+                    }).catch(function (reason) {
+                        console.log(reason);
+                    })
+                },
+                findById:function (id) {
+                    var that = this;
+                    axios.get("emp/findById.do?id="+id).then(function (response) {
+                        that.emp=response.data;
+                    }).catch(function (reason) {
+                        console.log(reason);
+                    })
+                },
+                showUpdate:function(row){
+                    this.dialogFormVisible = true;
+                    this.findById(row.id);
+                },
+                update:function(){
+                    var that = this;
+                    axios.post("emp/update.do",that.emp).then(function () {
+                        that.findAll();
+                        that.dialogFormVisible = false;
+                    }).catch(function (reason) {
+                        console.log(reason)
+                    });
+                },
+                delById:function (row) {
+                    let that =this;
+                    axios.get("emp/delById.do?id",row.id).then(function () {
+                        that.findAll();
+                    })
+                }
+            },
+            created:function () {
+                this.findAll();
+            }
+        });
+    </script>
+</body>
+</html>

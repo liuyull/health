@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="ElementUI/index.css">
+    <script src="ElementUI/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <!-- 引入ElementUI组件库 -->
+    <script src="ElementUI/index.js"></script>
+</head>
+<body>
+<div id="app" align="center">
+    <div style="width: 600px;padding-top: 80px" align="center">
+        <h1>添加员工信息</h1>
+        <el-form ref="emp" :model="emp" label-width="80px">
+            <el-form-item label="姓名">
+                <el-input v-model="emp.name"></el-input>
+            </el-form-item>
+            <el-form-item label="薪资">
+                <el-input v-model="emp.salary"></el-input>
+            </el-form-item>
+            <el-form-item label="生日">
+                <el-col>
+                    <el-date-picker type="date" placeholder="选择日期" v-model="emp.birthday" style="width: 100%;"></el-date-picker>
+                </el-col>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">提交</el-button>
+                <el-button @click="onReset">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            emp: {
+                name: '',
+                salary: '',
+                birthday:''
+            }
+        },
+        methods: {
+            onSubmit() {
+                axios.post("emp/save.do",this.emp).then(function () {
+                    location.href="list.html";
+                });
+            },
+            onReset(){
+                this.emp={
+                    name: '',
+                    salary: '',
+                    birthday:''
+                };
+            }
+        }
+    });
+</script>
+<style>
+    h1{
+        color: #409EFF;
+    }
+</style>
+</body>
+</html>

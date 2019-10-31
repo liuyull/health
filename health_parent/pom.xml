@@ -14,7 +14,7 @@
         <module>health_backend</module>
     </modules>
     <packaging>pom</packaging>
-    <!-- 集中定义依赖版本号 -->
+
     <properties>
         <junit.version>4.12</junit.version>
         <spring.version>5.0.5.RELEASE</spring.version>
@@ -256,6 +256,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
