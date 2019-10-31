@@ -1,0 +1,15 @@
+com\ly\domain\Menu.class
+com\ly\domain\Permission.class
+com\ly\domain\Setmeal.class
+com\ly\entity\Result.class
+com\ly\domain\Member.class
+com\ly\domain\User.class
+com\ly\domain\CheckItem.class
+com\ly\domain\Emp.class
+com\ly\entity\QueryPageBean.class
+com\ly\constant\MessageConstant.class
+com\ly\entity\PageResult.class
+com\ly\domain\CheckGroup.class
+com\ly\domain\Role.class
+com\ly\domain\Order.class
+com\ly\domain\OrderSetting.class

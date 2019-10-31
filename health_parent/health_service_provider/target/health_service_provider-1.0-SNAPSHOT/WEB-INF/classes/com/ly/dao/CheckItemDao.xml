@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.CheckItemDao">
+    <select id="findByCondition" parameterType="string" resultType="com.ly.domain.CheckItem">
+        select * from t_checkitem
+        <if test="value!=null and value.length > 0">
+            where code = #{value} or name = #{value}
+        </if>
+    </select>
+</mapper>

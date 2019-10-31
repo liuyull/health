@@ -43,13 +43,7 @@ public class CheckItemController {
      */
     @RequestMapping("/pageQuery.do")
     public PageResult pageQuery(@RequestBody QueryPageBean queryPageBean) {
-        Page<CheckItem> checkItemPage = null;
-        try {
-            checkItemPage = checkItemService.pageQuery(queryPageBean);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        PageResult pageResult = new PageResult(checkItemPage.getTotal(), checkItemPage.getResult());
+        PageResult pageResult = checkItemService.pageQuery(queryPageBean);
         return pageResult;
     }
 }

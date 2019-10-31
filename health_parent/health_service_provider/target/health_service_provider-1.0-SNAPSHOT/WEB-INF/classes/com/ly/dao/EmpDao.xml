@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.EmpDao">
+        <insert id="insert" parameterType="Emp">
+        <!-- 配置插入操作后,获取插入数据的id -->
+            <selectKey resultType="int" keyProperty="id" keyColumn="id" order="AFTER">
+                select last_insert_id();
+            </selectKey>
+            insert into t_emp(name,salary,birthday) values(#{name},#{salary},#{birthday});
+        </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from t_emp where id = #{id};
+    </delete>
+    <update id="update" parameterType="emp">
+        update t_emp set name = #{name},salary=#{salary},birthday=#{birthday} where id = #{id};
+    </update>
+</mapper>
