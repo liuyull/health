@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.dao.CheckGroupDao">
+    <insert id="add" parameterType="com.ly.domain.CheckGroup">
+        <selectKey resultType="int" order="AFTER" keyProperty="id" keyColumn="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_checkgroup values(null,#{name},#{code},#{sex},#{helpCode},#{remark},#{attention})
+    </insert>
+    <!--在中间表中添加检查组和检查项的关系-->
+    <insert id="setCheckGroupAndCheckItem" parameterType="map">
+        insert into t_checkgroup_checkitem (checkgroup_id,checkitem_id )
+                        values(#{checkGroupId},#{checkItemId})
+    </insert>
+</mapper>

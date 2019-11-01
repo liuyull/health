@@ -145,7 +145,7 @@
                                 </el-row>
                                 <el-row>
                                     <el-col :span="12">
-                                        <el-form-item label="性别">
+                                        <el-form-item label="性别" prop="sex">
                                             <el-select v-model="formData.sex">
                                                 <el-option label="不限" value="0"></el-option>
                                                 <el-option label="男" value="1"></el-option>
@@ -154,14 +154,14 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span="12">
-                                        <el-form-item label="适用年龄">
+                                        <el-form-item label="适用年龄" prop="age">
                                             <el-input v-model="formData.age"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col :span="12">
-                                        <el-form-item label="类型">
+                                        <el-form-item label="类型" prop="type">
                                             <el-select v-model="formData.type">
                                                 <el-option label="检查" value="1"></el-option>
                                                 <el-option label="检验" value="2"></el-option>
@@ -169,21 +169,21 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span="12">
-                                        <el-form-item label="价格">
+                                        <el-form-item label="价格" prop="price">
                                             <el-input v-model="formData.price"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col :span="24">
-                                        <el-form-item label="项目说明">
+                                        <el-form-item label="项目说明" prop="remark">
                                             <el-input v-model="formData.remark" type="textarea"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col :span="24">
-                                        <el-form-item label="注意事项">
+                                        <el-form-item label="注意事项" prop="attention">
                                             <el-input v-model="formData.attention" type="textarea"></el-input>
                                         </el-form-item>
                                     </el-col>
@@ -236,6 +236,25 @@
             methods: {
                 //编辑
                 handleEdit() {
+                    this.$refs.dataEditForm.validate(valid=>{
+                       if (valid){
+                           //校验成功
+                           axios.post('../checkItem/update.do',this.formData).then(res=>{
+                               if(res.data.flag){
+                                   //更新成功
+                                   this.$message.success(res.data.message);
+                               } else{
+                                   //更新失败
+                                   this.$message.error(res.data.message);
+                               }
+                           }).finally(()=>{
+                               this.dialogFormVisible4Edit=false;
+                               this.findPage();
+                           });
+                       }else{
+                           this.$message.error("您输入的信息有误,请仔细检查");
+                       }
+                    });
                 },
                 //添加
                 handleAdd () {
@@ -248,12 +267,13 @@
                                 if (result.flag){
                                     //添加成功
                                     this.$message.success(result.message);
-                                    this.dialogFormVisible=false;
-                                    this.$refs.dataAddForm.resetFields();
                                 } else{
                                     //添加失败
                                     this.$message.error(result.message);
                                 }
+                            }).finally(()=>{
+                                this.dialogFormVisible=false;
+                                this.findPage();
                             });
                         }else{
                             this.$message.error("您输入的信息有误,请仔细检查");
@@ -272,15 +292,25 @@
                         this.dataList=res.data.rows;
                     });
                 },
-                // 重置表单
-                resetForm() {
+                // 重置表单校验结果
+                resetForm(formRef) {
+                    this.$refs[formRef].resetFields();
                 },
                 // 弹出添加窗口
                 handleCreate() {
+                    this.formData={};
+                    //不能把显示dialog方到后面,不然会不显示
                     this.dialogFormVisible=true;
+                    this.resetForm('dataAddForm');
+
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
+                    this.dialogFormVisible4Edit=true;
+                    axios.get("../checkItem/findById.do?id="+row.id).then(res=>{
+                       this.formData=res.data;
+                    });
+                    this.resetForm('dataEditForm');
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
@@ -289,8 +319,21 @@
                 },
                 // 删除
                 handleDelete(row) {
+                    this.$confirm("你确定要删除吗?").then(()=>{
+                        axios.get("../checkItem/deleteById.do?id="+row.id).then(res=>{
+                            if (res.data.flag){
+                                //删除成功
+                                this.$message.success(res.data.message);
+                            } else{
+                                //删除失败
+                                this.$message.error(res.data.message);
+                            }
+                        }).finally(()=>{
+                            this.findPage();
+                        });
+                    });
                 }
             }
-        })
+        });
     </script>
 </html>
